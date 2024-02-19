@@ -3,6 +3,8 @@ package com.aestiel.attendance.services.implementations;
 import com.aestiel.attendance.models.User;
 import com.aestiel.attendance.repositories.UserRepository;
 import com.aestiel.attendance.services.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,18 @@ public class UserServiceImpl implements UserService {
         if (!isCorrectPasswordFormat(password)) {
             throw new Exception("Invalid Password format.");
         }
+    }
+
+    @Override
+    public void removeAuthCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(authCookieName, null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Override

@@ -2,9 +2,11 @@ package com.aestiel.attendance.controllers;
 
 import com.aestiel.attendance.services.AuthService;
 import com.aestiel.attendance.services.UserService;
+import com.aestiel.attendance.services.implementations.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,8 +32,6 @@ public class UserController {
         }
 
         userService.createUser(email, password);
-        //this.userId = userService.findByEmail(email).getId();
-        //this.loggedUserDetails = new UserDetailsImpl(userId,email);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -43,5 +43,18 @@ public class UserController {
             throws Exception {
         response.addCookie(authService.createAuthCookie(email, password));
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/user/sign-out")
+    public ResponseEntity<?> signOutUser(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
+        userService.removeAuthCookie(response);
+        return ResponseEntity.status(204).build();
+    }
+
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
+        userService.deleteUser(userDetails.getId());
+        userService.removeAuthCookie(response);
+        return ResponseEntity.status(204).build();
     }
 }
