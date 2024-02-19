@@ -1,6 +1,7 @@
 package com.aestiel.attendance.configurations;
 
 import com.aestiel.attendance.middleware.AuthFilter;
+import com.aestiel.attendance.services.AuthService;
 import com.aestiel.attendance.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +16,16 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    private UserService userService;
-    public SecurityConfiguration(UserService userService) {
+    private final UserService userService;
+    private final AuthService authService;
+    public SecurityConfiguration(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @Bean
     public AuthFilter authenticationTokenFilterBean() {
-        return new AuthFilter(userService);
+        return new AuthFilter(authService, userService);
     }
 
     @Bean
