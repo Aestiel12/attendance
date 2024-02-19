@@ -1,5 +1,6 @@
 package com.aestiel.attendance.services;
 
+import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.models.User;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -12,7 +13,7 @@ public interface UserService {
 
     void createUser(String email, String password);
 
-    void validateNewUser(String email, String password) throws Exception;
+    void validateNewUser(String email, String password) throws ValidationAppException;
 
     void removeAuthCookie(HttpServletResponse response);
 

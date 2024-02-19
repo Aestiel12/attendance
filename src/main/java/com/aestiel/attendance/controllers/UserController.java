@@ -1,5 +1,6 @@
 package com.aestiel.attendance.controllers;
 
+import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.services.AuthService;
 import com.aestiel.attendance.services.UserService;
 import com.aestiel.attendance.services.implementations.UserDetailsImpl;
@@ -23,12 +24,12 @@ public class UserController {
     @PostMapping(value = "/register")
     public ResponseEntity<?> registerUser(@RequestPart(value = "email", required = false) String email,
                                           @RequestPart(value = "password", required = false) String password)
-            throws Exception {
+            throws ValidationAppException {
+
         userService.validateNewUser(email, password);
 
         if (userService.existsByEmail(email)) {
-            throw new Exception("User with this email already exists.");
-
+            throw new ValidationAppException("User with this email already exists.");
         }
 
         userService.createUser(email, password);

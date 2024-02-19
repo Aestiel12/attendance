@@ -1,5 +1,6 @@
 package com.aestiel.attendance.services.implementations;
 
+import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.models.User;
 import com.aestiel.attendance.repositories.UserRepository;
 import com.aestiel.attendance.services.UserService;
@@ -38,13 +39,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void validateNewUser(String email, String password) throws Exception {
+    public void validateNewUser(String email, String password) throws ValidationAppException {
         if (!isCorrectEmailFormat(email)) {
-            throw new Exception("Invalid E-mail address format.");
+            throw new ValidationAppException("Invalid E-mail address format.");
         }
 
         if (!isCorrectPasswordFormat(password)) {
-            throw new Exception("Invalid Password format.");
+            throw new ValidationAppException("Invalid Password format.");
         }
     }
 

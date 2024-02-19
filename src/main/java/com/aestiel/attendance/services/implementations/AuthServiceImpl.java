@@ -1,5 +1,6 @@
 package com.aestiel.attendance.services.implementations;
 
+import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.models.User;
 import com.aestiel.attendance.services.AuthService;
 import com.aestiel.attendance.services.UserService;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService { private static final int A
     }
 
     @Override
-    public Cookie createAuthCookie(String email, String password) throws Exception {
+    public Cookie createAuthCookie(String email, String password) throws ValidationAppException {
         String token = generateAuthToken(email, password);
         Cookie cookieTtl = new Cookie(authCookieName, token);
         cookieTtl.setPath("/");
@@ -41,14 +42,14 @@ public class AuthServiceImpl implements AuthService { private static final int A
     }
 
     @Override
-    public String generateAuthToken(String email, String password) throws Exception {
+    public String generateAuthToken(String email, String password) throws ValidationAppException {
         if (!StringUtils.hasText(email) || !StringUtils.hasText(password)) {
-            throw new Exception("Please provide a valid email address and password.");
+            throw new ValidationAppException("Please provide a valid email address and password.");
         }
 
         User user = userService.findByEmail(email);
         if (user == null || !userService.isValidPassword(user, password)) {
-            throw new Exception("Incorrect password.");
+            throw new ValidationAppException("Incorrect password.");
         }
 
         return generateJWT(new UserDetailsImpl(user.getId(), user.getEmail()));
