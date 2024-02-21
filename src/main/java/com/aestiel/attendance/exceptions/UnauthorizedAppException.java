@@ -4,7 +4,6 @@ import com.aestiel.attendance.annotations.ExceptionStatusCode;
 
 @ExceptionStatusCode(status = 403)
 public class UnauthorizedAppException extends Exception {
-
     public UnauthorizedAppException(){
         super();
     }
