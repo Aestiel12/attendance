@@ -1,9 +1,12 @@
 package com.aestiel.attendance.services.implementations;
 
+import com.aestiel.attendance.DTOs.Waypoint.EmailDTOWaypointApi;
 import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.models.User;
+import com.aestiel.attendance.proxies.WaypointApi;
 import com.aestiel.attendance.repositories.UserRepository;
 import com.aestiel.attendance.services.UserService;
+import com.aestiel.attendance.services.WaypointEmailService;
 import com.aestiel.attendance.services.WorkService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +15,7 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,12 +23,16 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder;
-
     private final WorkService workService;
-    public UserServiceImpl(UserRepository userRepository, Pbkdf2PasswordEncoder pbkdf2PasswordEncoder, WorkService workService) {
+    private final WaypointEmailService waypointEmailService;
+    private final WaypointApi waypointApi;
+
+    public UserServiceImpl(UserRepository userRepository, Pbkdf2PasswordEncoder pbkdf2PasswordEncoder, WorkService workService, WaypointEmailService waypointEmailService, WaypointApi waypointApi) {
         this.userRepository = userRepository;
         this.pbkdf2PasswordEncoder = pbkdf2PasswordEncoder;
         this.workService = workService;
+        this.waypointEmailService = waypointEmailService;
+        this.waypointApi = waypointApi;
     }
 
     @Value("${AUTH_COOKIE_NAME}")
@@ -43,10 +51,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(String email, String password) {
+    public void createUser(String email, String password) throws IOException {
         userRepository.save(new User(email, this.passwordToUserToken(password)));
         User user = userRepository.findUserByEmail(email);
+
         workService.createBasicActivities(user);
+
+        EmailDTOWaypointApi emailDTO = waypointEmailService.createWelcomeEmail("wptemplate_H6XE7CSa6ZJCKsjQ", user);
+        waypointApi.sendEmail(emailDTO).execute();
     }
 
     @Override

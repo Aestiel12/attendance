@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/")
 public class UserController {
@@ -24,7 +26,7 @@ public class UserController {
     @PostMapping(value = "/register", consumes = {"multipart/form-data"})
     public ResponseEntity<?> registerUser(@RequestPart(value = "email", required = false) String email,
                                           @RequestPart(value = "password", required = false) String password)
-            throws ValidationAppException {
+            throws ValidationAppException, IOException {
 
         userService.validateNewUser(email, password);
 

@@ -4,6 +4,8 @@ import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.models.User;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+
 public interface UserService {
     boolean isCorrectEmailFormat(String email);
 
@@ -13,7 +15,7 @@ public interface UserService {
 
     User findById(Long id);
 
-    void createUser(String email, String password);
+    void createUser(String email, String password) throws IOException;
 
     void validateNewUser(String email, String password) throws ValidationAppException;
 
