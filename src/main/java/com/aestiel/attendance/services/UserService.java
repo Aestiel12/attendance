@@ -11,6 +11,8 @@ public interface UserService {
 
     User findByEmail(String email);
 
+    User findById(Long id);
+
     void createUser(String email, String password);
 
     void validateNewUser(String email, String password) throws ValidationAppException;

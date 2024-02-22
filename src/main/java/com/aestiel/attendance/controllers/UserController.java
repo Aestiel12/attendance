@@ -21,7 +21,7 @@ public class UserController {
         this.authService = authService;
     }
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = "/register", consumes = {"multipart/form-data"})
     public ResponseEntity<?> registerUser(@RequestPart(value = "email", required = false) String email,
                                           @RequestPart(value = "password", required = false) String password)
             throws ValidationAppException {
@@ -37,7 +37,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/login", consumes = {"multipart/form-data"})
     public ResponseEntity<Void> authenticateUser(@RequestPart(value = "email", required = false) String email,
                                                  @RequestPart(value = "password", required = false) String password,
                                                  HttpServletResponse response)

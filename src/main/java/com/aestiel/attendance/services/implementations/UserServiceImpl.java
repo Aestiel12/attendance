@@ -4,6 +4,7 @@ import com.aestiel.attendance.exceptions.ValidationAppException;
 import com.aestiel.attendance.models.User;
 import com.aestiel.attendance.repositories.UserRepository;
 import com.aestiel.attendance.services.UserService;
+import com.aestiel.attendance.services.WorkService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,12 @@ import java.util.regex.Pattern;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder;
-    public UserServiceImpl(UserRepository userRepository, Pbkdf2PasswordEncoder pbkdf2PasswordEncoder) {
+
+    private final WorkService workService;
+    public UserServiceImpl(UserRepository userRepository, Pbkdf2PasswordEncoder pbkdf2PasswordEncoder, WorkService workService) {
         this.userRepository = userRepository;
         this.pbkdf2PasswordEncoder = pbkdf2PasswordEncoder;
+        this.workService = workService;
     }
 
     @Value("${AUTH_COOKIE_NAME}")
@@ -34,8 +38,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findById(Long id) {
+        return userRepository.findUserById(id);
+    }
+
+    @Override
     public void createUser(String email, String password) {
         userRepository.save(new User(email, this.passwordToUserToken(password)));
+        User user = userRepository.findUserByEmail(email);
+        workService.createBasicActivities(user);
     }
 
     @Override
