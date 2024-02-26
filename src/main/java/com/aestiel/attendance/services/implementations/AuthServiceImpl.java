@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService { private static final int A
 
     @Value("${attendance.authCookieName}")
     private String authCookieName;
-    private UserService userService;
+    private final UserService userService;
     public AuthServiceImpl(UserService userService) {
         this.userService = userService;
     }
