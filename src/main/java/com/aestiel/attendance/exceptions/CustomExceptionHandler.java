@@ -24,7 +24,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleExceptions(Exception e) {
         int statusCode = getExceptionStatus(e);
-
+        System.out.println("Super skvely druhy radek");
         if (statusCode == 900) {
             logger.error("{} ERROR {}, Message: {}, Stack trace: {}",
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
