@@ -25,7 +25,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleExceptions(Exception e) {
         int statusCode = getExceptionStatus(e);
 
-        if (statusCode == 500) {
+        if (statusCode == 900) {
             logger.error("{} ERROR {}, Message: {}, Stack trace: {}",
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
                     e.getClass(),
@@ -42,7 +42,7 @@ public class CustomExceptionHandler {
         if (exceptionClass.isAnnotationPresent(ExceptionStatusCode.class)) {
             return exceptionClass.getAnnotation(ExceptionStatusCode.class).status();
         } else {
-            return 500;
+            return 900;
         }
     }
 }
